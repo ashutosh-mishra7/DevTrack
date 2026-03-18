@@ -12,7 +12,11 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
- 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
     try {
       const { data } = await api.post('/auth/login', { identifier, password });
       login(data);
