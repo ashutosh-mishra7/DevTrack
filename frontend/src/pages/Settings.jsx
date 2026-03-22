@@ -9,13 +9,12 @@ const Settings = () => {
   const { user, updateContextUser, logout } = useAuth();
   const navigate = useNavigate();
 
-  // Basic Details State
+
   const [name, setName] = useState(user?.name || '');
   const [avatar, setAvatar] = useState(user?.avatar || 1);
   const [basicLoading, setBasicLoading] = useState(false);
   const [basicSuccess, setBasicSuccess] = useState(false);
 
-  // Email State
   const [newEmail, setNewEmail] = useState('');
   const [emailLoading, setEmailLoading] = useState(false);
   const [emailError, setEmailError] = useState('');
@@ -49,7 +48,7 @@ const Settings = () => {
     setEmailError('');
     try {
       await api.put('/user/settings', { newEmail });
-      // Redirect to verification
+  
       logout();
       navigate('/verify-email', { state: { email: newEmail } });
     } catch (error) {

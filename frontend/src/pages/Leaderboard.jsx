@@ -26,8 +26,7 @@ const Leaderboard = () => {
      return <div className="animate-pulse bg-white/50 h-[80vh] rounded-xl flex items-center justify-center text-[var(--color-steelblue)]">Loading rankings...</div>;
   }
 
-  // To simulate rank changes since we don't store historical rankings, we'll randomize an indicator visually for demo purposes based on username length. 
-  // In a real app this would compare current rank to last week's rank.
+ 
   const getRankIndicator = (username) => {
     const val = username.length % 3;
     if (val === 0) return <TrendingUp size={16} className="text-green-500" />;

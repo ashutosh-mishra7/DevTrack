@@ -67,10 +67,10 @@ const Profile = () => {
     <div className="max-w-3xl mx-auto space-y-6">
       
       <div className="bg-white rounded-3xl shadow-sm border border-[var(--color-warmbeige)] overflow-hidden">
-        {/* Banner */}
+       
         <div className="h-32 bg-gradient-to-r from-[var(--color-softblue)] to-[var(--color-steelblue)]"></div>
         
-        {/* User Info Header */}
+       
         <div className="px-8 pb-8 relative">
            <div className="absolute -top-16 left-8 p-1.5 bg-white rounded-full">
             <img 
@@ -91,7 +91,7 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Platform Connections Form */}
+      
       <div className="bg-white rounded-3xl shadow-sm border border-[var(--color-warmbeige)] p-8">
         <h2 className="text-2xl font-bold tracking-tight text-[var(--color-darkslate)] mb-2">Connected Platforms</h2>
         <p className="text-[var(--color-steelblue)] mb-8">
