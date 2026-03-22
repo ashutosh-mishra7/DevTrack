@@ -51,7 +51,7 @@ const Register = () => {
         avatar,
       });
 
-      // ✅ DIRECT LOGIN AFTER REGISTER
+      
       login(data);
       navigate('/');
 

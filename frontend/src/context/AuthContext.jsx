@@ -6,7 +6,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Load user from localStorage
+  
   useEffect(() => {
     try {
       const userInfo = localStorage.getItem('userInfo');
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('userInfo');
   };
 
-  // 🔄 Update user (profile/settings change)
+  
   const updateContextUser = (updatedData) => {
     if (!user) return;
 
