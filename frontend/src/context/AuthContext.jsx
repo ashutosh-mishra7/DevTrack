@@ -6,7 +6,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  
   useEffect(() => {
     try {
       const userInfo = localStorage.getItem('userInfo');
@@ -21,23 +20,24 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // 🔐 Login
   const login = (userData) => {
     setUser(userData);
     localStorage.setItem('userInfo', JSON.stringify(userData));
   };
 
-  // 🚪 Logout
   const logout = () => {
     setUser(null);
     localStorage.removeItem('userInfo');
   };
 
-  
+  // ✅ Fixed: ab callback aur direct object dono support karta hai
   const updateContextUser = (updatedData) => {
     if (!user) return;
 
-    const newData = { ...user, ...updatedData };
+    const newData = typeof updatedData === 'function'
+      ? { ...user, ...updatedData(user) }
+      : { ...user, ...updatedData };
+
     setUser(newData);
     localStorage.setItem('userInfo', JSON.stringify(newData));
   };
