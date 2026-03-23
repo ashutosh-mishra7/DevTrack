@@ -32,13 +32,12 @@ const Profile = () => {
       }
     };
     fetchProfile();
-  }, []);
+  }, [user?._id]); // ✅ user change hone par reload
 
   const handleChange = (e) => {
     setPlatforms({ ...platforms, [e.target.name]: e.target.value });
   };
 
-  // ✅ Fixed: direct object pass, no callback
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -46,8 +45,7 @@ const Profile = () => {
 
     try {
       const { data } = await api.put('/user/profile', { platforms });
-      
-      // ✅ Fixed: callback ki jagah direct object
+
       updateContextUser({
         platforms: data.platforms,
         stats: data.stats
@@ -109,7 +107,6 @@ const Profile = () => {
           </div>
         )}
 
-        {/* ✅ Fixed: onSubmit properly connected */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -172,7 +169,6 @@ const Profile = () => {
           </div>
 
           <div className="pt-6 border-t border-[var(--color-warmbeige)]">
-            {/* ✅ Fixed: type="submit" explicitly add kiya */}
             <button
               type="submit"
               disabled={loading}

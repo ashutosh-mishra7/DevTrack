@@ -19,6 +19,8 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
+  // ✅ Cache disable
+  res.set('Cache-Control', 'no-store');
   res.json({
     _id: user._id,
     username: user.username,
@@ -40,10 +42,11 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
-  user.platforms.github = req.body.github || user.platforms.github;
-  user.platforms.leetcode = req.body.leetcode || user.platforms.leetcode;
-  user.platforms.hackerrank = req.body.hackerrank || user.platforms.hackerrank;
-  user.platforms.linkedin = req.body.linkedin || user.platforms.linkedin;
+  // ✅ Fixed: req.body.platforms se read karo
+  user.platforms.github = req.body.platforms?.github || user.platforms.github;
+  user.platforms.leetcode = req.body.platforms?.leetcode || user.platforms.leetcode;
+  user.platforms.hackerrank = req.body.platforms?.hackerrank || user.platforms.hackerrank;
+  user.platforms.linkedin = req.body.platforms?.linkedin || user.platforms.linkedin;
 
   if (user.platforms.github) {
     const ghStats = await getGitHubStats(user.platforms.github);
@@ -75,6 +78,8 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 
   const updatedUser = await user.save();
 
+  // ✅ Cache disable
+  res.set('Cache-Control', 'no-store');
   res.json({
     _id: updatedUser._id,
     username: updatedUser.username,
@@ -84,7 +89,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 
-// @desc Update settings (NO OTP)
+// @desc Update settings
 export const updateUserSettings = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
@@ -93,15 +98,12 @@ export const updateUserSettings = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
-  // name
   user.name = req.body.name || user.name;
 
-  // avatar
   if (req.body.avatar) {
     user.avatar = req.body.avatar;
   }
 
-  // 🔐 password change (simple)
   if (req.body.oldPassword && req.body.newPassword) {
     if (await user.matchPassword(req.body.oldPassword)) {
       user.password = req.body.newPassword;
@@ -111,13 +113,13 @@ export const updateUserSettings = asyncHandler(async (req, res) => {
     }
   }
 
-  // 📧 email change (direct, no OTP)
   if (req.body.newEmail && req.body.newEmail !== user.email) {
     user.email = req.body.newEmail;
   }
 
   const updatedUser = await user.save();
 
+  res.set('Cache-Control', 'no-store');
   res.json({
     _id: updatedUser._id,
     username: updatedUser.username,
@@ -150,6 +152,7 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
     });
   }
 
+  res.set('Cache-Control', 'no-store');
   res.json({
     stats: user.stats,
     chartData
@@ -164,5 +167,6 @@ export const getLeaderboard = asyncHandler(async (req, res) => {
     .limit(50)
     .select('username stats.score avatar name');
 
+  res.set('Cache-Control', 'no-store');
   res.json(users);
 });

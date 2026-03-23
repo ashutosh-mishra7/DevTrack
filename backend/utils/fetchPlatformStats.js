@@ -8,7 +8,6 @@ export const getGitHubStats = async (username) => {
     const userRes = await axios.get(`https://api.github.com/users/${username}`);
     const repos = userRes.data.public_repos;
     
-    // Simplistic commit/push tracking using recent events
     const eventsRes = await axios.get(`https://api.github.com/users/${username}/events/public?per_page=100`);
     const events = eventsRes.data;
     
@@ -29,38 +28,18 @@ export const getGitHubStats = async (username) => {
   }
 };
 
-// LeetCode Stats
+// ✅ Fixed: LeetCode - alternate public API
+// ✅ alfa-leetcode-api — most reliable alternative
 export const getLeetCodeStats = async (username) => {
   if (!username) return { solved: 0 };
   
   try {
-    const query = `
-      query getUserProfile($username: String!) {
-        matchedUser(username: $username) {
-          submitStats: submitStatsGlobal {
-            acSubmissionNum {
-              difficulty
-              count
-              submissions
-            }
-          }
-        }
-      }
-    `;
-
-    const res = await axios.post('https://leetcode.com/graphql', {
-      query,
-      variables: { username }
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-
-    const data = res.data.data.matchedUser;
-    if (data && data.submitStats && data.submitStats.acSubmissionNum) {
-      const allStats = data.submitStats.acSubmissionNum.find(stat => stat.difficulty === 'All');
-      return { solved: allStats ? allStats.count : 0 };
+    const res = await axios.get(
+      `https://alfa-leetcode-api.onrender.com/${username}/solved`
+    );
+    
+    if (res.data && res.data.solvedProblem !== undefined) {
+      return { solved: res.data.solvedProblem };
     }
     
     return { solved: 0 };
@@ -70,18 +49,17 @@ export const getLeetCodeStats = async (username) => {
   }
 };
 
-// HackerRank Stats (Mock due to harsh scraping protections/lack of public API)
+// HackerRank Stats (Mock)
 export const getHackerRankStatsMock = (username) => {
   if (!username) return { progress: 0 };
-  // Deterministic mock based on username
   let hash = 0;
   for (let i = 0; i < username.length; i++) {
     hash = username.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return { progress: Math.abs(hash) % 500 }; 
+  return { progress: Math.abs(hash) % 500 };
 };
 
-// LinkedIn Stats (Mock due to extreme scraping protections)
+// LinkedIn Stats (Mock)
 export const getLinkedInStatsMock = (username) => {
   if (!username) return { posts: 0 };
   let hash = 0;
@@ -93,14 +71,6 @@ export const getLinkedInStatsMock = (username) => {
 
 // Calculate Score
 export const calculateTotalScore = (stats) => {
-  // Ranking factors as required:
-  // GitHub commits 30%
-  // LeetCode problems 25%
-  // HackerRank progress 20%
-  // LinkedIn posts 15%
-  // Consistency 10%
-  // We'll normalize this by multiplying by weights
-  
   const score = (stats.githubCommits * 0.30) +
                 (stats.leetcodeSolved * 0.25) +
                 (stats.hackerrankProgress * 0.20) +
