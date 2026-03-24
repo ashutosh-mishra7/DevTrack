@@ -63,7 +63,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 className="w-10 h-10 rounded-full bg-[var(--color-lightsky)] object-cover"
                 onError={(e) => {
                   e.target.onerror = null; 
-                  e.target.src = 'https://api.dicebear.com/7.x/bottts/svg?seed=' + user.username;
+                  e.target.src = `https://api.dicebear.com/7.x/bottts/svg?seed=Avatar${user.avatar || 1}`;
                 }}
               />
               <div className="overflow-hidden">

@@ -11,6 +11,7 @@ const Settings = () => {
 
 
   const [name, setName] = useState(user?.name || '');
+  const [username, setUsername] = useState(user?.username || '');
   const [avatar, setAvatar] = useState(user?.avatar || 1);
   const [basicLoading, setBasicLoading] = useState(false);
   const [basicSuccess, setBasicSuccess] = useState(false);
@@ -30,8 +31,8 @@ const Settings = () => {
     setBasicLoading(true);
     setBasicSuccess(false);
     try {
-      const { data } = await api.put('/user/settings', { name, avatar });
-      updateContextUser({ name: data.name, avatar: data.avatar });
+      const { data } = await api.put('/user/settings', { username, name, avatar });
+      updateContextUser({ username: data.username, name: data.name, avatar: data.avatar });
       setBasicSuccess(true);
       setTimeout(() => setBasicSuccess(false), 3000);
     } catch (error) {
@@ -41,18 +42,22 @@ const Settings = () => {
     }
   };
 
+  const [emailSuccess, setEmailSuccess] = useState(false);
+
   const handleEmailUpdate = async (e) => {
     e.preventDefault();
     if (!newEmail || newEmail === user.email) return;
     setEmailLoading(true);
     setEmailError('');
+    setEmailSuccess(false);
     try {
       await api.put('/user/settings', { newEmail });
-  
-      logout();
-      navigate('/verify-email', { state: { email: newEmail } });
+      updateContextUser({ email: newEmail });
+      setEmailSuccess(true);
+      setTimeout(() => setEmailSuccess(false), 3000);
     } catch (error) {
       setEmailError(error.response?.data?.message || 'Failed to update email');
+    } finally {
       setEmailLoading(false);
     }
   };
@@ -113,6 +118,17 @@ const Settings = () => {
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
+            
+            <div>
+              <label className="block text-sm font-bold text-[var(--color-darkslate)] mb-2">Username</label>
+              <input
+                type="text"
+                required
+                className="w-full px-4 py-3 rounded-xl border border-[var(--color-warmbeige)] focus:ring-2 focus:ring-[var(--color-softblue)] focus:border-transparent outline-none transition-all placeholder:text-gray-400 bg-gray-50/50"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
 
             <div className="pt-4 border-t border-[var(--color-warmbeige)]">
               <AvatarSelector selected={avatar} onSelect={setAvatar} />
@@ -139,6 +155,9 @@ const Settings = () => {
            {emailError && (
              <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm mb-4 border border-red-100">{emailError}</div>
            )}
+           {emailSuccess && (
+             <div className="bg-green-50 text-green-700 p-3 rounded-xl text-sm mb-4 border border-green-200">Email updated successfully.</div>
+           )}
 
            <form onSubmit={handleEmailUpdate} className="space-y-4">
              <div>
@@ -151,14 +170,13 @@ const Settings = () => {
                   onChange={(e) => setNewEmail(e.target.value)}
                 />
              </div>
-             <p className="text-xs text-gray-400">You will be logged out and a verification code will be sent to the new email address.</p>
              <button
                 type="submit"
                 disabled={emailLoading || !newEmail || newEmail === user?.email}
-                className="w-full bg-[var(--color-lightsky)] hover:bg-[var(--color-softblue)] hover:text-white text-[var(--color-steelblue)] font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full bg-[var(--color-lightsky)] hover:bg-[var(--color-softblue)] hover:text-white text-[var(--color-steelblue)] font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-4"
               >
                 {emailLoading && <Loader2 className="animate-spin" size={20} />}
-                Send Verification Code
+                Update Email
               </button>
            </form>
         </div>

@@ -6,6 +6,7 @@ import {
   getLeetCodeStats,
   getHackerRankStatsMock,
   getLinkedInStatsMock,
+  getCodeChefStatsMock,
   calculateTotalScore
 } from '../utils/fetchPlatformStats.js';
 
@@ -43,31 +44,51 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
   }
 
   // ✅ Fixed: req.body.platforms se read karo
-  user.platforms.github = req.body.platforms?.github || user.platforms.github;
-  user.platforms.leetcode = req.body.platforms?.leetcode || user.platforms.leetcode;
-  user.platforms.hackerrank = req.body.platforms?.hackerrank || user.platforms.hackerrank;
-  user.platforms.linkedin = req.body.platforms?.linkedin || user.platforms.linkedin;
+  user.platforms.github = req.body.platforms?.github !== undefined ? req.body.platforms.github : user.platforms.github;
+  user.platforms.leetcode = req.body.platforms?.leetcode !== undefined ? req.body.platforms.leetcode : user.platforms.leetcode;
+  user.platforms.hackerrank = req.body.platforms?.hackerrank !== undefined ? req.body.platforms.hackerrank : user.platforms.hackerrank;
+  user.platforms.linkedin = req.body.platforms?.linkedin !== undefined ? req.body.platforms.linkedin : user.platforms.linkedin;
+  user.platforms.codechef = req.body.platforms?.codechef !== undefined ? req.body.platforms.codechef : user.platforms.codechef;
 
   if (user.platforms.github) {
     const ghStats = await getGitHubStats(user.platforms.github);
     user.stats.githubCommits = ghStats.commits;
     user.stats.githubPushes = ghStats.pushes;
     user.stats.githubRepos = ghStats.repos;
+    user.stats.activityFlow = ghStats.activityFlow;
+  } else {
+    user.stats.githubCommits = 0;
+    user.stats.githubPushes = 0;
+    user.stats.githubRepos = 0;
+    user.stats.activityFlow = [];
   }
 
   if (user.platforms.leetcode) {
     const lcStats = await getLeetCodeStats(user.platforms.leetcode);
     user.stats.leetcodeSolved = lcStats.solved;
+  } else {
+    user.stats.leetcodeSolved = 0;
   }
 
   if (user.platforms.hackerrank) {
     const hrStats = getHackerRankStatsMock(user.platforms.hackerrank);
-    user.stats.hackerrankProgress = hrStats.progress;
+    user.stats.hackerrankSolved = hrStats.solved;
+  } else {
+    user.stats.hackerrankSolved = 0;
   }
 
   if (user.platforms.linkedin) {
     const liStats = getLinkedInStatsMock(user.platforms.linkedin);
     user.stats.linkedinPosts = liStats.posts;
+  } else {
+    user.stats.linkedinPosts = 0;
+  }
+
+  if (user.platforms.codechef) {
+    const ccStats = getCodeChefStatsMock(user.platforms.codechef);
+    user.stats.codechefSolved = ccStats.solved;
+  } else {
+    user.stats.codechefSolved = 0;
   }
 
   if (user.stats.githubCommits > 0 || user.stats.leetcodeSolved > 0) {
@@ -96,6 +117,16 @@ export const updateUserSettings = asyncHandler(async (req, res) => {
   if (!user) {
     res.status(404);
     throw new Error('User not found');
+  }
+
+  // Update Username
+  if (req.body.username && req.body.username !== user.username) {
+    const userExists = await User.findOne({ username: req.body.username });
+    if (userExists) {
+      res.status(400);
+      throw new Error('Username already taken');
+    }
+    user.username = req.body.username;
   }
 
   user.name = req.body.name || user.name;
@@ -139,23 +170,30 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
-  const chartData = [];
+  const allUsers = await User.find().sort({ 'stats.score': -1 }).select('_id');
+  const rankPosition = allUsers.findIndex(u => u._id.toString() === user._id.toString()) + 1;
+  const totalUsers = allUsers.length;
 
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
+  let chartData = user.stats.activityFlow;
 
-    chartData.push({
-      name: d.toLocaleDateString('en-US', { weekday: 'short' }),
-      commits: Math.floor(Math.random() * (user.stats.githubCommits > 0 ? 5 : 1)),
-      problems: Math.floor(Math.random() * (user.stats.leetcodeSolved > 0 ? 3 : 1)),
-    });
+  if (!chartData || chartData.length === 0) {
+    chartData = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      chartData.push({
+        name: d.toLocaleDateString('en-US', { weekday: 'short' }),
+        commits: 0
+      });
+    }
   }
 
   res.set('Cache-Control', 'no-store');
   res.json({
     stats: user.stats,
-    chartData
+    chartData,
+    rankPosition,
+    totalUsers
   });
 });
 

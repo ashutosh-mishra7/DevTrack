@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema(
       leetcode: { type: String, default: '' },
       hackerrank: { type: String, default: '' },
       linkedin: { type: String, default: '' },
+      codechef: { type: String, default: '' },
     },
     
     stats: {
@@ -49,9 +50,11 @@ const userSchema = new mongoose.Schema(
       githubPushes: { type: Number, default: 0 },
       githubRepos: { type: Number, default: 0 },
       leetcodeSolved: { type: Number, default: 0 },
-      hackerrankProgress: { type: Number, default: 0 },
+      hackerrankSolved: { type: Number, default: 0 },
+      codechefSolved: { type: Number, default: 0 },
       linkedinPosts: { type: Number, default: 0 },
       streak: { type: Number, default: 0 },
+      activityFlow: { type: Array, default: [] },
       lastActivityTime: { type: Date, default: Date.now },
       score: { type: Number, default: 0 },
     }
@@ -62,9 +65,9 @@ const userSchema = new mongoose.Schema(
 );
 
 // Hash password before saving
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   if (!this.isModified('password')) {
-    next();
+    return;
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);

@@ -14,12 +14,17 @@ const getTodos = asyncHandler(async (req, res) => {
 
   // Generate Smart Suggestions if total todos is low
   if (todos.length < 5) {
-    const suggestions = [
-      'Make a GitHub commit today',
-      'Solve 2 LeetCode problems',
-      'Post something on LinkedIn',
-      'Improve your coding streak',
+    const allSuggestions = [
+      ['Plan your week', 'Review old PRs', 'Solve 1 Easy LeetCode'],
+      ['Start a new project', 'Make a GitHub commit', 'Read a tech article'],
+      ['Solve 2 LeetCode problems', 'Refactor old code', 'Update LinkedIn profile'],
+      ['Write a tech blog post', 'Contribute to open source', 'Learn a new framework'],
+      ['Optimize code performance', 'Post something on LinkedIn', 'Solve 1 Medium LeetCode'],
+      ['Code review day', 'Improve your coding streak', 'Write unit tests'],
+      ['Participate in a weekly contest', 'Clean up local branches', 'Read official documentation'],
     ];
+    const today = new Date().getDay();
+    const suggestions = allSuggestions[today];
     
     for (const sug of suggestions) {
       const exists = todos.find(t => t.task === sug);

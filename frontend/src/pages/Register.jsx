@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 import AvatarSelector from '../components/AvatarSelector';
 import { UserPlus, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext'; // ✅ ADD THIS
 
 const Register = () => {
   const [formData, setFormData] = useState({

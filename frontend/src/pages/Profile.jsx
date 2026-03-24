@@ -9,7 +9,8 @@ const Profile = () => {
     github: '',
     leetcode: '',
     hackerrank: '',
-    linkedin: ''
+    linkedin: '',
+    codechef: ''
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -23,7 +24,8 @@ const Profile = () => {
           github: '',
           leetcode: '',
           hackerrank: '',
-          linkedin: ''
+          linkedin: '',
+          codechef: ''
         });
       } catch (error) {
         console.error('Error fetching profile', error);
@@ -80,7 +82,7 @@ const Profile = () => {
               src={`/avatars/${user?.avatar || 1}.png`}
               alt="avatar"
               className="w-28 h-28 rounded-full bg-[var(--color-lightsky)] object-cover shadow-sm"
-              onError={(e) => { e.target.onerror = null; e.target.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${user?.username}` }}
+              onError={(e) => { e.target.onerror = null; e.target.src = `https://api.dicebear.com/7.x/bottts/svg?seed=Avatar${user?.avatar || 1}` }}
             />
           </div>
 
@@ -162,6 +164,20 @@ const Profile = () => {
                 className="w-full px-4 py-3 rounded-xl border border-[var(--color-warmbeige)] focus:ring-2 focus:ring-[#0a66c2]/50 focus:border-transparent outline-none transition-all placeholder:text-gray-300 bg-gray-50/50"
                 placeholder="e.g. williamhgates"
                 value={platforms.linkedin}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-bold text-[#8B5A2B]">
+                <TerminalSquare size={18} /> CodeChef Username
+              </label>
+              <input
+                type="text"
+                name="codechef"
+                className="w-full px-4 py-3 rounded-xl border border-[var(--color-warmbeige)] focus:ring-2 focus:ring-[#8B5A2B]/50 focus:border-transparent outline-none transition-all placeholder:text-gray-300 bg-gray-50/50"
+                placeholder="e.g. codechef_master"
+                value={platforms.codechef}
                 onChange={handleChange}
               />
             </div>

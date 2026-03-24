@@ -35,10 +35,10 @@ const Leaderboard = () => {
   };
 
   const getRankMedal = (index) => {
-    if (index === 0) return <Medal size={28} className="text-yellow-400 drop-shadow-sm" />;
-    if (index === 1) return <Medal size={26} className="text-gray-400 drop-shadow-sm" />;
-    if (index === 2) return <Medal size={24} className="text-[#cd7f32] drop-shadow-sm" />;
-    return <span className="text-lg font-bold text-gray-400 w-7 text-center block">{index + 1}</span>;
+    if (index === 0) return <span className="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border border-yellow-300 shadow-sm">Gold</span>;
+    if (index === 1) return <span className="bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border border-gray-300 shadow-sm">Silver</span>;
+    if (index === 2) return <span className="bg-orange-50 text-[#cd7f32] px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border border-[#cd7f32]/40 shadow-sm">Bronze</span>;
+    return <span className="text-sm font-bold text-gray-400 w-full text-center block">#{index + 1}</span>;
   };
 
   return (
@@ -83,7 +83,7 @@ const Leaderboard = () => {
                           src={`/avatars/${user.avatar || 1}.png`} 
                           alt="avatar" 
                           className="w-12 h-12 rounded-full bg-[var(--color-warmbeige)] object-cover shadow-sm"
-                          onError={(e) => { e.target.onerror=null; e.target.src=`https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`}}
+                          onError={(e) => { e.target.onerror=null; e.target.src=`https://api.dicebear.com/7.x/bottts/svg?seed=Avatar${user.avatar || 1}`}}
                         />
                         <div>
                           <div className="text-[var(--color-darkslate)] font-bold flex items-center gap-2">
