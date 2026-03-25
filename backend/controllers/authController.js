@@ -65,7 +65,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 });
 
 
-// 🔐 Change Password (NEW)
+
 export const changePassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword, confirmPassword } = req.body;
 

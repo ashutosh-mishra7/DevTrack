@@ -8,6 +8,8 @@ import Todo from './pages/Todo';
 import Leaderboard from './pages/Leaderboard';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import AdminPanel from './pages/AdminPanel';
+import AdminLogin from './pages/AdminLogin';
 
 function App() {
   return (
@@ -17,6 +19,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminPanel />} />
 
         
         <Route path="/" element={<Layout />}>

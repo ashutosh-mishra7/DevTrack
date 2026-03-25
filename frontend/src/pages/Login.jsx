@@ -9,6 +9,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showForgotMsg, setShowForgotMsg] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -81,7 +82,31 @@ const Login = () => {
           </button>
         </form>
 
-        <p className="text-center mt-8 text-sm text-[var(--color-darkslate)]">
+        <div className="text-center mt-4">
+          <button 
+            type="button" 
+            onClick={() => setShowForgotMsg(!showForgotMsg)}
+            className="text-sm text-[var(--color-steelblue)] hover:text-blue-800 font-semibold transition-colors"
+          >
+            Forgot Password?
+          </button>
+        </div>
+
+        {showForgotMsg && (
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-center">
+            <p className="text-[var(--color-darkslate)] mb-2">
+              Contact your admin for changing your password at:
+            </p>
+            <a 
+              href="mailto:ashu122068@gmail.com?subject=Password%20Reset%20Request&body=Hi Admin, my username is: " 
+              className="text-[var(--color-steelblue)] font-bold hover:underline"
+            >
+              ashu122068@gmail.com
+            </a>
+          </div>
+        )}
+
+        <p className="text-center mt-6 text-sm text-[var(--color-darkslate)]">
           Don't have an account?{' '}
           <Link to="/register" className="text-[var(--color-steelblue)] hover:text-[var(--color-softblue)] font-semibold transition-colors">
             Create an account
