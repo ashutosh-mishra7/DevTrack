@@ -10,10 +10,26 @@ export const AuthProvider = ({ children }) => {
     try {
       const userInfo = localStorage.getItem('userInfo');
       if (userInfo) {
-        setUser(JSON.parse(userInfo));
+        const parsedUser = JSON.parse(userInfo);
+        
+        // Token expiration check
+        if (parsedUser?.token) {
+          const payload = JSON.parse(atob(parsedUser.token.split('.')[1]));
+          // exp is in seconds, Date.now() is in ms
+          if (payload.exp * 1000 < Date.now()) {
+            console.warn('Authentication token expired, logging out.');
+            localStorage.removeItem('userInfo');
+            setUser(null);
+          } else {
+            setUser(parsedUser);
+          }
+        } else {
+          // Fallback if token is somehow missing but userInfo exists
+          setUser(parsedUser);
+        }
       }
     } catch (error) {
-      console.error('Error parsing userInfo:', error);
+      console.error('Error parsing userInfo or token:', error);
       localStorage.removeItem('userInfo');
     } finally {
       setLoading(false);

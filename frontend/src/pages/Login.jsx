@@ -52,7 +52,7 @@ const Login = () => {
               type="text"
               required
               className="w-full px-4 py-3 rounded-lg border border-[var(--color-warmbeige)] focus:ring-2 focus:ring-[var(--color-softblue)] focus:border-transparent outline-none transition-all placeholder:text-gray-400"
-              placeholder="e.g. ashu_dev or ashu@example.com"
+              placeholder="username or email"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
             />
