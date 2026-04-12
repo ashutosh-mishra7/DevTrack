@@ -22,7 +22,7 @@ const AdminPanel = () => {
 
     const fetchUsers = async () => {
       try {
-        const { data } = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/admin/users`, {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL || 'https://devtrack-nd76.onrender.com/api'}/admin/users`, {
           headers: {
             Authorization: `Bearer ${adminToken}`,
             'Cache-Control': 'no-cache',
@@ -59,7 +59,7 @@ const AdminPanel = () => {
 
     try {
       const { data } = await axios.put(
-        `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/admin/users/${id}/reset-password`,
+        `${import.meta.env.VITE_API_URL || 'https://devtrack-nd76.onrender.com/api'}/admin/users/${id}/reset-password`,
         { newPassword },
         { headers: { Authorization: `Bearer ${adminToken}` } }
       );
