@@ -19,7 +19,13 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { login } = useAuth(); // ✅ ADD THIS
+  const { login, user } = useAuth(); 
+
+  useEffect(() => {
+    if (user) {
+      navigate('/', { replace: true });
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     if (formData.username.length > 0) {
